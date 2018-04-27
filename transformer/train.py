@@ -94,10 +94,8 @@ class Graph():
 
                 # 32(batch size), 10(N: sentence len), 512 (de: word vector)
                 # No idea on pooling after concat to n*2de shape
-                # Concat to n*de*2 instead to do max pooling
-                self.enc = tf.stack([self.forward_enc, self.backward_enc], 3)
-                self.enc = tf.nn.max_pool(self.enc, [1,1,1,2], [1,1,1,2], padding='SAME')
-                self.enc = tf.squeeze(self.enc)
+                # Use element wise maximum instead
+                self.enc = tf.maximum(self.forward_enc, self.backward_enc)
 
             # TODO: Done! After n times multi-head attention in both directions, concatenate results.
             # TODO: Max-pooling details after concatenation? (dimensions?)
