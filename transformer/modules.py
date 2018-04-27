@@ -175,6 +175,7 @@ def multihead_attention(queries,
                         dropout_rate=0,
                         is_training=True,
                         causality=False,
+                        direction = 0,
                         scope="multihead_attention", 
                         reuse=None):
     '''Applies multihead attention.
@@ -226,7 +227,12 @@ def multihead_attention(queries,
         # Causality = Future blinding
         if causality:
             diag_vals = tf.ones_like(outputs[0, :, :]) # (T_q, T_k)
-            tril = tf.contrib.linalg.LinearOperatorTriL(diag_vals).to_dense() # (T_q, T_k)
+            if direction == 0:
+                # Forward
+                tril = tf.contrib.linalg.LinearOperatorTriL(diag_vals).to_dense() # (T_q, T_k)
+            else:
+                # Backward
+                tril = tf.matrix_band_part(diag_vals, 0, -1)
             masks = tf.tile(tf.expand_dims(tril, 0), [tf.shape(outputs)[0], 1, 1]) # (h*N, T_q, T_k)
    
             paddings = tf.ones_like(masks)*(-2**32+1)
