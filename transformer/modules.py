@@ -111,7 +111,8 @@ def embedding(inputs,
             lookup_table = tf.concat((tf.zeros(shape=[1, num_units]),
                                       lookup_table[1:, :]), 0)
         outputs = tf.nn.embedding_lookup(lookup_table, inputs)
-        
+
+        # Scaled embedding
         if scale:
             outputs = outputs * (num_units ** 0.5) 
             
@@ -179,8 +180,8 @@ def multihead_attention(queries,
     '''Applies multihead attention.
     
     Args:
-      queries: A 3d tensor with shape of [N, T_q, C_q].
-      keys: A 3d tensor with shape of [N, T_k, C_k].
+      queries: A 3d tensor with shape of [N, T_q, C_q]. dimension dk
+      keys: A 3d tensor with shape of [N, T_k, C_k]. dimension dk
       num_units: A scalar. Attention size.
       dropout_rate: A floating point number.
       is_training: Boolean. Controller of mechanism for dropout.
@@ -191,7 +192,7 @@ def multihead_attention(queries,
         by the same name.
         
     Returns
-      A 3d tensor with shape of (N, T_q, C)  
+      A 3d tensor with shape of (N, T_q, C)  dimension dv
     '''
     with tf.variable_scope(scope, reuse=reuse):
         # Set the fall back option for num_units
