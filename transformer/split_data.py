@@ -1,7 +1,7 @@
 from hyperparams import Hyperparams as hp
 
-TRAIN_SET_SIZE = 200000
-TEST_SET_SIZE = 1000
+TRAIN_SET_SIZE = 300000
+TEST_SET_SIZE = 60000
 
 
 def split_data(file_path):
